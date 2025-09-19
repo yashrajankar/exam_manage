@@ -13,4 +13,16 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-module.exports = { pool };
+// Add a testConnection function for health checks
+const testConnection = async () => {
+  try {
+    const connection = await pool.getConnection();
+    await connection.ping();
+    connection.release();
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
+module.exports = { pool, testConnection };
