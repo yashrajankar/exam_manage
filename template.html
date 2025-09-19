@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Templates</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .csv-card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            justify-content: flex-start;
+            margin-top: 32px;
+        }
+        .csv-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            padding: 24px 32px;
+            min-width: 260px;
+            max-width: 320px;
+            flex: 1 1 260px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: box-shadow 0.2s;
+        }
+        .csv-card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.16);
+        }
+        .csv-card h3 {
+            margin: 0 0 12px 0;
+            font-size: 1.2rem;
+            color: #2d3a4a;
+        }
+        .csv-card p {
+            margin: 0 0 16px 0;
+            color: #555;
+            font-size: 0.98rem;
+        }
+        .csv-card a {
+            color: #1976d2;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .csv-card a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSV Templates</h1>
+    <div class="csv-card-container">
+        <div class="csv-card">
+            <h3>Students Template</h3>
+            <p>View the template for importing student data.</p>
+            <button onclick="showCSV('students-template.csv', 'students-csv')">Show CSV</button>
+            <pre id="students-csv" style="display:none;"><code></code></pre>
+        </div>
+        <div class="csv-card">
+            <h3>Staff Template</h3>
+            <p>View the template for importing staff data.</p>
+            <button onclick="showCSV('staff-template.csv', 'staff-csv')">Show CSV</button>
+            <pre id="staff-csv" style="display:none;"><code></code></pre>
+        </div>
+        <div class="csv-card">
+            <h3>Staff (180) Template</h3>
+            <p>View the extended staff template (180 rows).</p>
+            <button onclick="showCSV('staff-180.csv', 'staff180-csv')">Show CSV</button>
+            <pre id="staff180-csv" style="display:none;"><code></code></pre>
+        </div>
+        <div class="csv-card">
+            <h3>Rooms Template</h3>
+            <p>View the template for importing room data.</p>
+            <button onclick="showCSV('rooms-template.csv', 'rooms-csv')">Show CSV</button>
+            <pre id="rooms-csv" style="display:none;"><code></code></pre>
+        </div>
+        <div class="csv-card">
+            <h3>Timetable Template</h3>
+            <p>View the template for importing timetable data.</p>
+            <button onclick="showCSV('timetable-template.csv', 'timetable-csv')">Show CSV</button>
+            <pre id="timetable-csv" style="display:none;"><code></code></pre>
+        </div>
+        <div class="csv-card">
+            <h3>Notifications Template</h3>
+            <p>View the template for importing notifications.</p>
+            <button onclick="showCSV('notifications-template.csv', 'notifications-csv')">Show CSV</button>
+            <pre id="notifications-csv" style="display:none;"><code></code></pre>
+        </div>
+    </div>
+    <script>
+        function showCSV(csvFile, preId) {
+            const pre = document.getElementById(preId);
+            if (pre.style.display === 'block') {
+                pre.style.display = 'none';
+                pre.querySelector('code').textContent = '';
+                return;
+            }
+            fetch(csvFile)
+                .then(response => response.text())
+                .then(text => {
+                    pre.querySelector('code').textContent = text;
+                    pre.style.display = 'block';
+                })
+                .catch(() => {
+                    pre.querySelector('code').textContent = 'Failed to load CSV.';
+                    pre.style.display = 'block';
+                });
+        }
+    </script>
+</body>
+</html>

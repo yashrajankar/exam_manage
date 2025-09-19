@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management - Admin Panel</title>
+    <link rel="stylesheet" href="../../admin.css">
+    <link rel="stylesheet" href="students.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div id="toastContainer" aria-live="polite"></div>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="../dashboard/dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="../timetable/timetable.html"><i class="fas fa-calendar-alt"></i> Timetable</a></li>
+                <li><a href="students.html" class="active"><i class="fas fa-users"></i> Students</a></li>
+                <li><a href="../room/room.html"><i class="fas fa-door-open"></i> Rooms</a></li>
+                <li><a href="../staff/staff.html"><i class="fas fa-user-tie"></i> Staff</a></li>
+                <li><a href="../notifications/notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="../../templates/index.html"><i class="fas fa-file-csv"></i> CSV Templates</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-users"></i> Student Management</h1>
+                <div class="user-info">
+                    <span id="currentDateTime"></span>
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                    <button id="logoutBtn" class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Controls Section -->
+                <div class="controls-section">
+                    <div class="control-group">
+                        <button id="addStudentBtn" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Add Student
+                        </button>
+                        <button id="importStudentsBtn" class="btn btn-secondary">
+                            <i class="fas fa-file-import"></i> Import CSV
+                        </button>
+                        <button id="exportStudentsBtn" class="btn btn-secondary">
+                            <i class="fas fa-file-export"></i> Export CSV
+                        </button>
+                        <button id="clearAllStudentsBtn" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+                    <div class="filter-group">
+                        <select id="sectionFilter" class="filter-select">
+                            <option value="">All Sections</option>
+                            <option value="B1">Section B1</option>
+                            <option value="B2">Section B2</option>
+                            <option value="B3">Section B3</option>
+                        </select>
+                    </div>
+                    <div class="search-group">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchInput" placeholder="Search students by name, ID, or class...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Students Table -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-id-card"></i> Roll No</th>
+                                <th><i class="fas fa-user"></i> Name</th>
+                                <th><i class="fas fa-graduation-cap"></i> Section</th>
+                                <th><i class="fas fa-envelope"></i> Email</th>
+                                <th><i class="fas fa-phone"></i> Phone</th>
+                                <th><i class="fas fa-cog"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- Student rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Statistics Section -->
+                <div class="stats-section">
+                    <!-- Overview Cards -->
+                    <div class="stat-card">
+                        <div class="stat-icon students-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalStudents">0</h3>
+                            <p>Total Students</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalClasses">0</h3>
+                            <p>Classes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="newStudents">0</h3>
+                            <p>New This Month</p>
+                        </div>
+                    </div>
+                    <!-- Section-specific Cards -->
+                    <div class="stat-card">
+                        <div class="stat-icon b1-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="b1Count">0</h3>
+                            <p>Section B1</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon b2-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="b2Count">0</h3>
+                            <p>Section B2</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon b3-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="b3Count">0</h3>
+                            <p>Section B3</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Student Modal -->
+    <div id="studentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="fas fa-user-plus"></i> Add Student</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="studentForm">
+                    <input type="hidden" id="studentId" name="studentId">
+                    <div class="form-section">
+                        <h3><i class="fas fa-user-circle"></i> Student Information</h3>
+                        <div class="form-group">
+                            <label for="rollNo"><i class="fas fa-id-card"></i> Roll Number:</label>
+                            <input type="text" id="rollNo" name="rollNo" required placeholder="Enter roll number">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName"><i class="fas fa-user"></i> First Name:</label>
+                                <input type="text" id="firstName" name="firstName" required placeholder="Enter first name">
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName"><i class="fas fa-user"></i> Last Name:</label>
+                                <input type="text" id="lastName" name="lastName" required placeholder="Enter last name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-section">
+                        <h3><i class="fas fa-graduation-cap"></i> Academic Information</h3>
+                        <div class="form-group">
+                            <label for="classSelect"><i class="fas fa-graduation-cap"></i> Section:</label>
+                            <select id="classSelect" name="classSelect" required>
+                                <option value="">Select Section</option>
+                                <option value="B1">Section B1</option>
+                                <option value="B2">Section B2</option>
+                                <option value="B3">Section B3</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email"><i class="fas fa-envelope"></i> Email:</label>
+                                <input type="email" id="email" name="email" placeholder="Enter email address">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone"><i class="fas fa-phone"></i> Phone:</label>
+                                <input type="tel" id="phone" name="phone" placeholder="Enter phone number">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn"><i class="fas fa-times"></i> Cancel</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Student</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-import"></i> Import Students from CSV</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <h3><i class="fas fa-file-csv"></i> Upload CSV File</h3>
+                    <form id="importForm">
+                        <div class="form-group">
+                            <label for="csvFile"><i class="fas fa-file-csv"></i> Select CSV File:</label>
+                            <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+                            <small class="form-text">Please select a CSV file to import student data</small>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="overwriteData"> <i class="fas fa-exclamation-triangle"></i> Overwrite existing data
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancelImportBtn"><i class="fas fa-times"></i> Cancel</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i> Import Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../utils.js"></script>
+    <script src="../../user.js"></script>
+    <script src="students.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Management - Admin Panel</title>
+    <link rel="stylesheet" href="../../admin.css">
+    <link rel="stylesheet" href="timetable.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="../dashboard/dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="timetable.html" class="active"><i class="fas fa-calendar-alt"></i> Exam Management</a></li>
+                <li><a href="../students/students.html"><i class="fas fa-users"></i> Students</a></li>
+                <li><a href="../room/room.html"><i class="fas fa-door-open"></i> Rooms</a></li>
+                <li><a href="../staff/staff.html"><i class="fas fa-user-tie"></i> Staff</a></li>
+                <li><a href="../notifications/notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="../../templates/index.html"><i class="fas fa-file-csv"></i> CSV Templates</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-calendar-alt"></i> Exam Management</h1>
+                <div class="user-info">
+                    <span id="currentDateTime"></span>
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                    <button id="logoutBtn" class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Controls Section -->
+                <div class="controls-section">
+                    <div class="control-group">
+                        <button id="addTimetableBtn" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Exam
+                        </button>
+                        <button id="importTimetableBtn" class="btn btn-secondary">
+                            <i class="fas fa-file-import"></i> Import Exams from CSV
+                        </button>
+                        <button id="exportTimetableBtn" class="btn btn-secondary">
+                            <i class="fas fa-file-export"></i> Export CSV
+                        </button>
+                        <button id="clearAllTimetableBtn" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+                    <div class="filter-group">
+                        <select id="statusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                        <select id="dateFilter">
+                            <option value="">All Dates</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="past">Past</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Exam Table -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Exam Code</th>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="timetableTableBody">
+                            <!-- Exam rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Statistics Section -->
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalEntries">0</h3>
+                            <p>Total Exams</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalSubjects">0</h3>
+                            <p>Subjects</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="upcomingExams">0</h3>
+                            <p>Upcoming Exams</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Exam Modal -->
+    <div id="timetableModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="fas fa-calendar-plus"></i> Add Exam</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="timetableForm">
+                    <input type="hidden" id="entryId" name="entryId">
+                    <div class="form-section">
+                        <h3><i class="fas fa-calendar-day"></i> Exam Details</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="codeInput">Exam Code:</label>
+                                <input type="text" id="codeInput" name="codeInput" required placeholder="Enter exam code (e.g., EXM001)">
+                            </div>
+                            <div class="form-group">
+                                <label for="subjectInput">Subject:</label>
+                                <input type="text" id="subjectInput" name="subjectInput" required placeholder="Enter subject name">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="dateInput">Date:</label>
+                                <input type="date" id="dateInput" name="dateInput" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="timeInput">Time:</label>
+                                <input type="text" id="timeInput" name="timeInput" required placeholder="Enter time (e.g., 10:00 AM - 12:00 PM)">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="statusSelect">Status:</label>
+                            <select id="statusSelect" name="statusSelect" required>
+                                <option value="Scheduled">Scheduled</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Exam</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-import"></i> Import Exams from CSV</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="importForm">
+                    <div class="form-section">
+                        <h3><i class="fas fa-file-csv"></i> Upload CSV File</h3>
+                        <div class="form-group">
+                            <label for="csvFile">Select CSV File:</label>
+                            <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+                            <p class="help-text">Upload a CSV file with exam data. The file should contain columns for Code, Subject, Date, Time, and Status.</p>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="overwriteData" name="overwriteData"> Overwrite existing data
+                            </label>
+                            <p class="help-text">Check this box to replace all existing exam entries with the data from the CSV file.</p>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelImportBtn">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Import Data</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../utils.js"></script>
+    <script src="../../user.js"></script>
+    <script src="timetable.js"></script>
+</body>
+</html>

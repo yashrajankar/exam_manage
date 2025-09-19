@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seating Arrangement - Student Portal</title>
+    <link rel="stylesheet" href="../../admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="../../utils.js"></script>
+    <script src="../../setUser.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-50: #eef2ff;
+            --primary-100: #e0e7ff;
+            --primary-200: #c7d2fe;
+            --primary-500: #4361ee;
+            --primary-600: #3751d0;
+            --primary-800: #1e3a8a;
+            --secondary: #3f37c9;
+            --success: #4ade80;
+            --success-100: #dcfce7;
+            --success-800: #166534;
+            --warning: #facc15;
+            --warning-100: #fef9c3;
+            --error: #f87171;
+            --error-100: #fee2e2;
+            --error-800: #991b1b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --white: #ffffff;
+            --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--gray-800);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(67, 97, 238, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(63, 55, 201, 0.05) 0%, transparent 20%);
+        }
+
+        .user-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            transition: all 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 14px 24px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 14px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-menu a:hover::before {
+            transform: translateX(0);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left: 3px solid var(--warning);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--warning);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--warning);
+        }
+
+        .sidebar-menu a i {
+            width: 22px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            margin-left: 260px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-200);
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary));
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info span {
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .content-wrapper {
+            padding: 20px 0;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            background: var(--white);
+            padding: var(--space-5);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: var(--space-2);
+            color: var(--primary-800);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header-content p {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .refresh-controls {
+            display: flex;
+            gap: var(--space-2);
+            align-items: center;
+        }
+
+        .last-updated {
+            font-size: 0.9rem;
+            color: var(--gray-500);
+            margin-right: var(--space-2);
+            background: var(--gray-100);
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+        }
+
+        /* Room Assignments Section */
+        .room-assignments-section {
+            margin-top: var(--space-6);
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .room-assignments-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-4);
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .room-assignments-section-header h2 {
+            font-size: 1.6rem;
+            color: var(--primary-800);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            margin: 0;
+        }
+
+        .assignments-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--space-3);
+            background: var(--white);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .assignments-table th,
+        .assignments-table td {
+            padding: var(--space-4);
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .assignments-table th {
+            text-align: center;
+        }
+
+        .assignments-table td:nth-child(1),
+        .assignments-table td:nth-child(2),
+        .assignments-table td:nth-child(3),
+        .assignments-table td:nth-child(5) {
+            text-align: center;
+        }
+
+        .assignments-table td:nth-child(4) {
+            min-width: 300px;
+        }
+
+        .assignments-table th {
+            background: linear-gradient(120deg, var(--primary-500), var(--primary-600));
+            color: white;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-200);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .assignments-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .assignments-table tr:hover {
+            background: linear-gradient(to right, var(--primary-50), var(--white));
+            transform: translateY(-1px);
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .assignments-table tr {
+            transition: var(--transition);
+        }
+
+        .roll-numbers {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-2);
+            padding: var(--space-2);
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            border: 1px dashed var(--gray-300);
+            animation: fadeIn 0.5s ease-in;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .roll-number {
+            background: linear-gradient(135deg, var(--primary-100), var(--primary-200));
+            color: var(--primary-800);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(67, 97, 238, 0.2);
+            transition: all 0.3s ease;
+            border: 1px solid var(--primary-200);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .roll-number.current-user {
+            background: linear-gradient(135deg, var(--warning-100), var(--warning));
+            color: var(--gray-900);
+            border: 2px solid var(--warning);
+            font-weight: 700;
+            transform: scale(1.05);
+            box-shadow: 0 3px 6px rgba(250, 204, 21, 0.3);
+        }
+
+        .roll-number.current-user::after {
+            content: 'You';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--warning);
+            color: var(--gray-900);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+        }
+
+        .roll-number::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .roll-number:hover::before {
+            left: 100%;
+        }
+
+        .roll-number:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: linear-gradient(135deg, var(--primary-200), var(--primary-100));
+        }
+
+        /* Connection status indicator */
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-left: var(--space-2);
+        }
+
+        .connection-status.connected {
+            background-color: var(--success-100);
+            color: var(--success-800);
+            border: 1px solid var(--success-100);
+            animation: pulse 2s infinite;
+        }
+
+        .connection-status.disconnected {
+            background-color: var(--error-100);
+            color: var(--error-800);
+            border: 1px solid var(--error-100);
+            animation: pulseError 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
+        }
+
+        @keyframes pulseError {
+            0% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+            color: var(--gray-700);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--gray-300), var(--gray-400));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, var(--success-500), var(--success-600));
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, var(--error-500), var(--error-600));
+        }
+
+        /* Responsive design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar-header h2 span {
+                display: none;
+            }
+            
+            .sidebar-menu a span {
+                display: none;
+            }
+            
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 16px;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .user-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px 0;
+            }
+
+            .sidebar-menu li {
+                margin: 5px;
+            }
+
+            .sidebar-menu a {
+                padding: 10px 15px;
+                border-radius: var(--radius-lg);
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .sidebar-menu a:hover, .sidebar-menu a.active {
+                border-left: none;
+                border-bottom: 3px solid var(--warning);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .content-wrapper {
+                padding: var(--space-4);
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .refresh-controls {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .assignments-table th,
+            .assignments-table td {
+                padding: var(--space-3);
+                font-size: 0.9rem;
+            }
+
+            .assignments-table td:nth-child(4) {
+                min-width: 200px;
+            }
+
+            .roll-numbers {
+                max-height: 150px;
+            }
+
+            #rollNumberSearch {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .assignments-table td:nth-child(4) {
+                min-width: 150px;
+            }
+
+            .roll-number {
+                font-size: 0.75rem;
+                padding: var(--space-1) var(--space-2);
+            }
+
+            .room-assignments-section-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .page-header-content h2 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media print {
+            .sidebar, .header, .page-header, .refresh-controls, .roll-numbers-toggle, .btn {
+                display: none !important;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 0;
+            }
+            
+            .room-assignments-section {
+                box-shadow: none;
+                border: none;
+            }
+            
+            .assignments-table th {
+                background: var(--gray-300) !important;
+                color: var(--gray-900) !important;
+            }
+            
+            .roll-number.current-user {
+                border: 2px solid var(--gray-900);
+                font-weight: bold;
+            }
+            
+            .roll-numbers {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+        }
+
+        /* Scrollbar styling */
+        .roll-numbers::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .roll-numbers::-webkit-scrollbar-track {
+            background: var(--gray-100);
+            border-radius: var(--radius-sm);
+        }
+
+        .roll-numbers::-webkit-scrollbar-thumb {
+            background: var(--primary-200);
+            border-radius: var(--radius-sm);
+        }
+
+        .roll-numbers::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-500);
+        }
+    </style>
+</head>
+<body>
+    <div class="user-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-graduation-cap"></i> <span>Student Portal</span></h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="../dashboard/dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="../exams/exams.html"><i class="fas fa-calendar-alt"></i> <span>Exam Timetable</span></a></li>
+                <li><a href="seating.html" class="active"><i class="fas fa-chair"></i> <span>Seating Arrangement</span></a></li>
+                <li><a href="../notifications/notifications.html"><i class="fas fa-bell"></i> <span>Notifications</span></a></li>
+                <li><a href="../profile/profile.html"><i class="fas fa-user-circle"></i> <span>Profile</span></a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-chair"></i> Seating Arrangement</h1>
+                <div class="user-info">
+                    <span id="currentDateTime"></span>
+                    <span><i class="fas fa-user-graduate"></i> Student</span>
+                    <div class="connection-status connected" id="connectionStatus">
+                        <i class="fas fa-circle"></i>
+                        <span>Connected</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <div class="refresh-controls" style="margin-bottom: var(--space-6);">
+                    <div style="display: flex; gap: var(--space-2); align-items: center; flex-wrap: wrap;">
+                        <input type="text" id="rollNumberSearch" placeholder="Search roll number..." style="padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--gray-300);">
+                        <button class="btn btn-secondary" onclick="window.print()">
+                            <i class="fas fa-print"></i> Print
+                        </button>
+                        <span class="last-updated" id="lastUpdated">Last updated: Just now</span>
+                        <button class="btn btn-secondary" id="refreshButton" onclick="refreshAllData()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Room Roll Number Assignments Section -->
+                <div class="room-assignments-section">
+                    <div class="room-assignments-section-header">
+                        <h2><i class="fas fa-user-graduate"></i> Room Roll Number Assignments</h2>
+                        <div style="display: flex; gap: var(--space-2);">
+                            <div class="connection-status connected" id="assignmentsConnectionStatus">
+                                <i class="fas fa-circle"></i>
+                                <span>Live</span>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="fetchRoomAssignments()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div style="margin-bottom: var(--space-4); display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: var(--space-1);">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, var(--warning-100), var(--warning)); border: 2px solid var(--warning); border-radius: var(--radius-sm);"></div>
+                            <span style="font-size: 0.9rem;">Your Roll Number</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: var(--space-1);">
+                            <div style="width: 20px; height: 20px; background: linear-gradient(135deg, var(--primary-100), var(--primary-200)); border: 1px solid var(--primary-200); border-radius: var(--radius-sm);"></div>
+                            <span style="font-size: 0.9rem;">Other Students</span>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="assignments-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-door-open"></i> Room</th>
+                                    <th><i class="fas fa-building"></i> Building</th>
+                                    <th><i class="fas fa-users"></i> Capacity</th>
+                                    <th><i class="fas fa-id-card"></i> Assigned Roll Numbers</th>
+                                    <th><i class="fas fa-hashtag"></i> Count</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roomAssignmentsTableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 3rem;">
+                                        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                            <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; color: var(--primary-600);"></i>
+                                            <p style="font-size: 1.1rem; color: var(--gray-600); margin: 0;">Loading room assignments...</p>
+                                            <p style="font-size: 0.9rem; color: var(--gray-500); margin: 0;">Please wait while we fetch your seating information</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastContainer"></div>
+    
+    <script>
+        // Update current date/time
+        function updateCurrentDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Kolkata'
+            };
+            document.getElementById('currentDateTime').textContent = now.toLocaleString("en-US", options);
+        }
+
+        // Logout function
+        function logout() {
+            // Clear user data from localStorage
+            localStorage.removeItem('currentUser');
+            // Redirect to login page
+            window.location.href = '../../index.html';
+        }
+
+        // Update last updated timestamp
+        function updateLastUpdated() {
+            const now = new Date();
+            const options = {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZone: 'Asia/Kolkata'
+            };
+            document.getElementById('lastUpdated').textContent = 'Last updated: ' + now.toLocaleTimeString("en-US", options);
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const statusElement = document.getElementById('connectionStatus');
+            const assignmentsStatusElement = document.getElementById('assignmentsConnectionStatus');
+            
+            if (connected) {
+                statusElement.className = 'connection-status connected';
+                statusElement.innerHTML = '<i class="fas fa-circle"></i> <span>Connected</span>';
+                
+                assignmentsStatusElement.className = 'connection-status connected';
+                assignmentsStatusElement.innerHTML = '<i class="fas fa-circle"></i> <span>Live</span>';
+            } else {
+                statusElement.className = 'connection-status disconnected';
+                statusElement.innerHTML = '<i class="fas fa-circle"></i> <span>Disconnected</span>';
+                
+                assignmentsStatusElement.className = 'connection-status disconnected';
+                assignmentsStatusElement.innerHTML = '<i class="fas fa-circle"></i> <span>Offline</span>';
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            toastContainer.appendChild(toast);
+            
+            // Trigger reflow to enable transition
+            toast.offsetHeight;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Store last modified timestamps to detect changes
+        let lastModifiedTimestamps = {
+            seatingPlans: null,
+            rooms: null,
+            students: null
+        };
+
+        // Check for data changes and refresh if needed
+        async function checkForChangesAndRefresh() {
+            try {
+                // Fetch last modified timestamps
+                const timestamps = await fetchData('lastModified');
+                
+                // Check if any relevant data has changed
+                const hasChanges = 
+                    lastModifiedTimestamps.seatingPlans !== timestamps.seatingPlans ||
+                    lastModifiedTimestamps.rooms !== timestamps.rooms ||
+                    lastModifiedTimestamps.students !== timestamps.students;
+                
+                // Update stored timestamps
+                lastModifiedTimestamps = {
+                    seatingPlans: timestamps.seatingPlans,
+                    rooms: timestamps.rooms,
+                    students: timestamps.students
+                };
+                
+                // If there are changes, refresh the data
+                if (hasChanges) {
+                    console.log('Detected changes in data, refreshing...');
+                    await refreshAllData();
+                    updateLastUpdated();
+                }
+            } catch (error) {
+                console.error('Error checking for changes:', error);
+                // Still try to refresh data even if we can't check timestamps
+                await refreshAllData();
+            }
+        }
+
+        // Fetch room assignments data from API
+        async function fetchRoomAssignments() {
+            try {
+                // Fetch rooms, seating plans, and students data
+                const [rooms, seatingPlans, students] = await Promise.all([
+                    fetchData('rooms'),
+                    fetchData('seatingPlans'),
+                    fetchData('students')
+                ]);
+
+                // Create a map of student ID to student data for quick lookup
+                const studentMap = {};
+                students.forEach(student => {
+                    studentMap[student._id] = student;
+                });
+
+                // Create a map of room ID to room details
+                const roomMap = {};
+                rooms.forEach(room => {
+                    roomMap[room._id] = {
+                        ...room,
+                        students: []
+                    };
+                });
+
+                // Process seating plans to extract roll numbers for each room
+                seatingPlans.forEach((plan) => {
+                    // Extract room information - roomId is at the root level of the plan object
+                    let roomId = plan.roomId || null;
+                    let seats = plan.seats || plan.planData?.seats || [];
+                    
+                    if (roomId && roomMap[roomId]) {
+                        // Extract roll numbers from seats
+                        if (Array.isArray(seats)) {
+                            seats.forEach((seat) => {
+                                // Check if the seat has a student assigned and is not a teacher desk
+                                if (seat.studentId && !seat.isTeacherDesk) {
+                                    // First try to get roll number directly from seat data
+                                    if (seat.rollNo) {
+                                        // Add student to the room's list
+                                        roomMap[roomId].students.push({
+                                            rollNo: seat.rollNo,
+                                            name: seat.name || seat.rollNo
+                                        });
+                                    } else if (seat.studentId) {
+                                        // Fallback to looking up the student to get their roll number
+                                        const student = studentMap[seat.studentId];
+                                        if (student && student.rollNo) {
+                                            // Add student to the room's list
+                                            roomMap[roomId].students.push({
+                                                rollNo: student.rollNo,
+                                                name: student.name || student.rollNo
+                                            });
+                                        }
+                                    }
+                                } else if (seat.rollNo && !seat.isTeacherDesk) {
+                                    // Handle case where seat has rollNo but no studentId
+                                    roomMap[roomId].students.push({
+                                        rollNo: seat.rollNo,
+                                        name: seat.name || seat.rollNo
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+
+                // Convert map to array and sort by room number
+                const assignments = Object.values(roomMap).sort((a, b) => {
+                    // Sort by building first, then by room number
+                    if (a.building !== b.building) {
+                        return a.building.localeCompare(b.building);
+                    }
+                    return a.number.localeCompare(b.number);
+                });
+
+                // Sort students in each assignment to ensure they are in ascending order
+                assignments.forEach(assignment => {
+                    if (assignment.students && assignment.students.length > 0) {
+                        assignment.students.sort((a, b) => {
+                            // Improved sorting for roll numbers like "AIDSU24001"
+                            // Extract the numeric part and sort by it
+                            const numA = parseInt(a.rollNo.match(/\d+/g)?.join('') || '0');
+                            const numB = parseInt(b.rollNo.match(/\d+/g)?.join('') || '0');
+                            return numA - numB;
+                        });
+                    }
+                });
+
+                renderRoomAssignments(assignments);
+                updateConnectionStatus(true);
+                return assignments;
+            } catch (error) {
+                console.error('Error fetching room assignments:', error);
+                updateConnectionStatus(false);
+                document.getElementById('roomAssignmentsTableBody').innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 3rem; color: var(--error-800); background-color: var(--error-100);">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem;"></i>
+                                <p style="font-size: 1.2rem; margin: 0; font-weight: 600;">Error loading room assignments</p>
+                                <p style="font-size: 1rem; margin: 0;">Please check your connection and try again.</p>
+                                <button onclick="fetchRoomAssignments()" class="btn btn-secondary" style="margin-top: 1rem;">
+                                    <i class="fas fa-sync-alt"></i> Retry
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                throw error;
+            }
+        }
+
+        // Refresh all data
+        async function refreshAllData() {
+            const refreshButton = document.getElementById('refreshButton');
+            let originalText = '<i class="fas fa-sync-alt"></i> Refresh';
+            
+            // If button exists, save original text and show loading state
+            if (refreshButton) {
+                originalText = refreshButton.innerHTML;
+                refreshButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                refreshButton.disabled = true;
+            }
+            
+            try {
+                // Update connection status to show we're refreshing
+                updateConnectionStatus(true);
+                
+                // Fetch room assignments
+                const roomAssignmentsResponse = await fetchRoomAssignments();
+                
+                updateLastUpdated();
+                
+                // Show success message only if triggered by user action (button click)
+                if (refreshButton) {
+                    showToast('Data refreshed successfully', 'success');
+                }
+                
+                return roomAssignmentsResponse;
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+                updateConnectionStatus(false);
+                
+                // Show error message only if triggered by user action (button click)
+                if (refreshButton) {
+                    showToast('Failed to refresh data. Please try again.', 'error');
+                }
+                
+                throw error;
+            } finally {
+                // Ensure button is re-enabled even if there's an error
+                if (refreshButton) {
+                    setTimeout(() => {
+                        refreshButton.innerHTML = originalText;
+                        refreshButton.disabled = false;
+                    }, 500);
+                }
+            }
+        }
+
+        // Get current user's roll number
+        function getCurrentUserRollNo() {
+            try {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                return currentUser ? currentUser.rollNo : null;
+            } catch (error) {
+                console.error('Error getting current user roll number:', error);
+                return null;
+            }
+        }
+
+        // Render room assignments
+        function renderRoomAssignments(assignments) {
+            const tableBody = document.getElementById('roomAssignmentsTableBody');
+            const currentUserRollNo = getCurrentUserRollNo();
+            
+            if (!assignments || assignments.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 3rem;">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                <i class="fas fa-info-circle" style="font-size: 2.5rem; color: var(--gray-400);"></i>
+                                <p style="font-size: 1.2rem; color: var(--gray-600); margin: 0; font-weight: 500;">No room assignments available</p>
+                                <p style="font-size: 1rem; color: var(--gray-500); margin: 0;">Seating arrangements will be displayed here once they are available.</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let html = '';
+            assignments.forEach(room => {
+                const rollCount = room.students ? room.students.length : 0;
+                
+                // Generate roll number HTML
+                let rollNumbersHtml = '';
+                if (room.students && room.students.length > 0) {
+                    rollNumbersHtml = room.students.map(student => {
+                        const isCurrentUser = student.rollNo === currentUserRollNo;
+                        const classes = `roll-number${isCurrentUser ? ' current-user' : ''}`;
+                        return `<span class="${classes}" title="${student.name}${isCurrentUser ? ' (You)' : ''}">${student.rollNo}</span>`;
+                    }).join('');
+                } else {
+                    rollNumbersHtml = '<span class="roll-number" style="background: var(--gray-200); color: var(--gray-600);">None assigned</span>';
+                }
+                
+                html += `
+                    <tr>
+                        <td>${room.number || 'N/A'}</td>
+                        <td>${room.building || 'N/A'}</td>
+                        <td>${room.capacity || 'N/A'}</td>
+                        <td>
+                            <div class="roll-numbers" id="rollNumbers-${room._id}">
+                                ${rollNumbersHtml}
+                            </div>
+                        </td>
+                        <td>${rollCount}</td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = html;
+        }
+
+        // Toggle roll numbers display
+        // Function removed as per user preference
+
+        // Search functionality
+        function filterRollNumbers() {
+            const searchTerm = document.getElementById('rollNumberSearch').value.toLowerCase();
+            const rollNumberElements = document.querySelectorAll('.roll-number');
+            
+            rollNumberElements.forEach(element => {
+                const rollNo = element.textContent.toLowerCase();
+                if (searchTerm === '' || rollNo.includes(searchTerm)) {
+                    element.style.display = 'inline-block';
+                    element.style.opacity = '1';
+                } else {
+                    element.style.display = 'none';
+                    element.style.opacity = '0.3';
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', async function() {
+            updateCurrentDateTime();
+            setInterval(updateCurrentDateTime, 60000); // Update every minute
+            
+            // Add search event listener
+            document.getElementById('rollNumberSearch').addEventListener('input', filterRollNumbers);
+            
+            try {
+                // Fetch room assignments
+                await fetchRoomAssignments();
+                
+                // Update last updated timestamp
+                updateLastUpdated();
+                
+                // Initialize last modified timestamps
+                try {
+                    const timestamps = await fetchData('lastModified');
+                    lastModifiedTimestamps = {
+                        seatingPlans: timestamps.seatingPlans,
+                        rooms: timestamps.rooms,
+                        students: timestamps.students
+                    };
+                } catch (error) {
+                    console.error('Error initializing timestamps:', error);
+                }
+            } catch (error) {
+                console.error('Error during initialization:', error);
+                updateConnectionStatus(false);
+            }
+            
+            // Check for changes every 10 seconds (more frequent than full refresh)
+            setInterval(checkForChangesAndRefresh, 10000);
+            
+            // Also keep the existing 30-second refresh as a fallback
+            setInterval(refreshAllData, 30000);
+            
+            // Add event listener for visibility change to refresh when tab becomes active
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden) {
+                    checkForChangesAndRefresh();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

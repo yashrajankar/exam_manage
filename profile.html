@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Student Portal</title>
+    <link rel="stylesheet" href="../../admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-200: #bfdbfe;
+            --primary-300: #93c5fd;
+            --primary-400: #60a5fa;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+            --primary-800: #1e40af;
+            --primary-900: #1e3a8a;
+            --secondary-500: #8b5cf6;
+            --success-500: #10b981;
+            --warning-500: #f59e0b;
+            --error-500: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --white: #ffffff;
+            --black: #000000;
+            --radius-sm: 0.125rem;
+            --radius-md: 0.25rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-7: 1.75rem;
+            --space-8: 2rem;
+            --space-9: 2.25rem;
+            --space-10: 2.5rem;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        .user-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--primary-800), var(--primary-900));
+            color: var(--white);
+            padding: var(--space-6) 0;
+            box-shadow: var(--shadow-lg);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 0 var(--space-6);
+            margin-bottom: var(--space-8);
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: var(--space-2);
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: var(--space-3) var(--space-6);
+            color: var(--primary-200);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            gap: var(--space-3);
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            border-left: 3px solid var(--primary-400);
+        }
+
+        .sidebar-menu a i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--white), var(--gray-50));
+            padding: var(--space-4) var(--space-6);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            color: var(--gray-600);
+        }
+
+        .user-info i {
+            font-size: 1.5rem;
+            color: var(--primary-600);
+        }
+
+        .content-wrapper {
+            padding: var(--space-6);
+            flex: 1;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-6);
+        }
+
+        .page-header h2 {
+            font-size: 1.75rem;
+            margin-bottom: var(--space-2);
+            color: var(--primary-800);
+        }
+
+        .page-header p {
+            color: var(--gray-600);
+        }
+
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: var(--space-6);
+        }
+
+        .profile-card {
+            background: linear-gradient(135deg, var(--white), var(--gray-50));
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-100), var(--primary-200));
+            margin: 0 auto var(--space-4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary-600);
+            border: 3px solid var(--primary-300);
+        }
+
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-2);
+            color: var(--gray-800);
+        }
+
+        .profile-rollno {
+            color: var(--primary-600);
+            font-weight: 500;
+            margin-bottom: var(--space-4);
+        }
+
+        .profile-details-card {
+            background: linear-gradient(135deg, var(--white), var(--gray-50));
+            border-radius: var(--radius-xl);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+        }
+
+        .profile-details-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: var(--space-4);
+            padding-bottom: var(--space-3);
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-4);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-2);
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: var(--space-3);
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-md);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-600);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1), var(--shadow-md);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-3) var(--space-5);
+            border-radius: var(--radius-lg);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            color: var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-700), var(--primary-800));
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+            color: var(--gray-800);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--gray-300), var(--gray-400));
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: var(--space-3);
+            margin-top: var(--space-5);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        @media (max-width: 768px) {
+            .user-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: var(--space-3) 0;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .sidebar-menu li {
+                margin: 0 var(--space-1);
+            }
+
+            .sidebar-menu a {
+                padding: var(--space-2) var(--space-3);
+                border-radius: var(--radius-lg);
+                border-left: none;
+            }
+
+            .content-wrapper {
+                padding: var(--space-4);
+            }
+
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="user-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-graduation-cap"></i> Student Portal</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="../dashboard/dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="../exams/exams.html"><i class="fas fa-calendar-alt"></i> Exam Timetable</a></li>
+                <li><a href="../seating/seating.html"><i class="fas fa-chair"></i> Seating Arrangement</a></li>
+                <li><a href="../notifications/notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="profile.html" class="active"><i class="fas fa-user-circle"></i> Profile</a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-user-circle"></i> Profile</h1>
+                <div class="user-info">
+                    <span id="currentDateTime"></span>
+                    <span>Student</span>
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h2>My Profile</h2>
+                    <p>Manage your personal information and account settings</p>
+                </div>
+
+                <div class="profile-container">
+                    <div class="profile-card">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <h3 class="profile-name">John Doe</h3>
+                        <p class="profile-rollno">Roll No: B1-123</p>
+                        <p class="profile-section">Section: B1</p>
+                        <p class="profile-enrollment">Enrolled: Aug 15, 2023</p>
+                    </div>
+
+                    <div class="profile-details-card">
+                        <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+                        <form id="profileForm">
+                            <div class="form-group">
+                                <label for="fullName"><i class="fas fa-user"></i> Full Name</label>
+                                <input type="text" id="fullName" name="fullName" value="John Doe" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="rollNo"><i class="fas fa-id-card"></i> Roll Number</label>
+                                    <input type="text" id="rollNo" name="rollNo" value="B1-123" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="section"><i class="fas fa-graduation-cap"></i> Section</label>
+                                    <input type="text" id="section" name="section" value="B1" readonly>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email"><i class="fas fa-envelope"></i> Email Address</label>
+                                <input type="email" id="email" name="email" value="john.doe@example.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone"><i class="fas fa-phone"></i> Phone Number</label>
+                                <input type="tel" id="phone" name="phone" value="+1234567890">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="enrollmentDate"><i class="fas fa-calendar-alt"></i> Enrollment Date</label>
+                                <input type="text" id="enrollmentDate" name="enrollmentDate" value="August 15, 2023" readonly>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="profile-details-card">
+                        <h3><i class="fas fa-lock"></i> Change Password</h3>
+                        <form id="passwordForm">
+                            <div class="form-group">
+                                <label for="currentPassword"><i class="fas fa-key"></i> Current Password</label>
+                                <input type="password" id="currentPassword" name="currentPassword" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="newPassword"><i class="fas fa-lock"></i> New Password</label>
+                                <input type="password" id="newPassword" name="newPassword" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="confirmPassword"><i class="fas fa-lock"></i> Confirm New Password</label>
+                                <input type="password" id="confirmPassword" name="confirmPassword" required>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="button" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</button>
+                                <button type="submit" class="btn btn-primary"><i class="fas fa-key"></i> Change Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Update current date/time
+        function updateCurrentDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                timeZone: 'Asia/Kolkata'
+            };
+            document.getElementById('currentDateTime').textContent = now.toLocaleString("en-US", options);
+        }
+
+        // Logout function
+        function logout() {
+            // Clear user data from localStorage
+            localStorage.removeItem('currentUser');
+            // Redirect to login page
+            window.location.href = '../../index.html';
+        }
+
+        // Fetch profile data from API
+        async function fetchProfileData() {
+            try {
+                const profile = await fetchData('user/profile');
+                document.getElementById('fullName').value = profile.name;
+                document.getElementById('rollNo').value = profile.rollNo;
+                document.getElementById('section').value = profile.section;
+                document.getElementById('email').value = profile.email;
+                document.getElementById('phone').value = profile.phone;
+                document.getElementById('enrollmentDate').value = new Date(profile.enrollmentDate).toLocaleDateString("en-US", {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCurrentDateTime();
+            setInterval(updateCurrentDateTime, 60000); // Update every minute
+            
+            // Fetch profile data
+            fetchProfileData();
+            
+            // Form submission for profile update
+            const profileForm = document.getElementById('profileForm');
+            if (profileForm) {
+                profileForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // In a real implementation, you would send the data to the server
+                    const formData = new FormData(profileForm);
+                    const profileData = Object.fromEntries(formData.entries());
+                    
+                    fetchData('user/profile', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(profileData)
+                    })
+                    .then(data => {
+                        alert('Profile updated successfully!');
+                    })
+                    .catch(error => {
+                        console.error('Error updating profile:', error);
+                        alert('Error updating profile. Please try again.');
+                    });
+                });
+            }
+            
+            // Form submission for password change
+            const passwordForm = document.getElementById('passwordForm');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const currentPassword = document.getElementById('currentPassword').value;
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+                    
+                    if (newPassword !== confirmPassword) {
+                        alert('New password and confirm password do not match!');
+                        return;
+                    }
+                    
+                    // In a real implementation, you would send the data to the server
+                    alert('Password changed successfully!');
+                    passwordForm.reset();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Management - AICN Admin</title>
+    <link rel="stylesheet" href="../../admin.css">
+    <link rel="stylesheet" href="room.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="toastContainer" aria-live="polite"></div>
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-container">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Loading...</div>
+        </div>
+    </div>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="../dashboard/dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="../timetable/timetable.html"><i class="fas fa-calendar-alt"></i> Timetable</a></li>
+                <li><a href="../students/students.html"><i class="fas fa-users"></i> Students</a></li>
+                <li><a href="room.html" class="active"><i class="fas fa-door-open"></i> Rooms</a></li>
+                <li><a href="../staff/staff.html"><i class="fas fa-user-tie"></i> Staff</a></li>
+                <li><a href="../notifications/notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="../../templates/index.html"><i class="fas fa-file-csv"></i> CSV Templates</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-door-open"></i> Room Management</h1>
+                <div class="user-info">
+                    <span id="currentDateTime"></span>
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                    <button id="logoutBtn" class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Controls Section -->
+                <div class="controls-section">
+                    <div class="control-group">
+                        <button id="addRoomBtn" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Add Room
+                        </button>
+                        <button id="importRoomsBtn" class="btn btn-secondary">
+                            <i class="fas fa-file-import"></i> Import CSV
+                        </button>
+                        <button id="exportRoomsBtn" class="btn btn-secondary">
+                            <i class="fas fa-file-export"></i> Export CSV
+                        </button>
+                        <button id="clearAllRoomBtn" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+                    <div class="search-group">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="roomSearch" placeholder="Search rooms...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rooms Table -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> Room Number</th>
+                                <th><i class="fas fa-building"></i> Building</th>
+                                <th><i class="fas fa-users"></i> Capacity</th>
+                                <th><i class="fas fa-cog"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="roomsTableBody">
+                            <!-- Room rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Room Roll Number Assignment Section -->
+                <div class="room-assignments-section">
+                    <div class="room-assignments-section-header">
+                        <h2><i class="fas fa-user-graduate"></i> Room Roll Number Assignments</h2>
+                        <div style="display: flex; gap: var(--space-2);">
+                            <button class="btn btn-secondary" id="shuffleClassroomsBtn">
+                                <i class="fas fa-random"></i> Shuffle
+                            </button>
+                            <button class="btn btn-secondary" id="exportAssignmentsBtn">
+                                <i class="fas fa-file-export"></i> Export
+                            </button>
+                            <div class="connection-status connected" id="assignmentsConnectionStatus">
+                                <i class="fas fa-circle"></i>
+                                <span>Live</span>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" id="refreshAssignmentsBtn">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="assignments-table">
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-door-open"></i> Room</th>
+                                    <th><i class="fas fa-building"></i> Building</th>
+                                    <th><i class="fas fa-users"></i> Capacity</th>
+                                    <th><i class="fas fa-id-card"></i> Assigned Roll Numbers</th>
+                                    <th><i class="fas fa-hashtag"></i> Count</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rollAssignmentsTableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 3rem;">
+                                        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                            <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; color: var(--primary-600);"></i>
+                                            <p style="font-size: 1.1rem; color: var(--gray-600); margin: 0;">Loading room assignments...</p>
+                                            <p style="font-size: 0.9rem; color: var(--gray-500); margin: 0;">Please wait while we fetch the latest data from the server</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <h2>Room Statistics</h2>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalRooms">0</h3>
+                            <p>Total Rooms</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalCapacity">0</h3>
+                            <p>Total Capacity</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="avgCapacity">0</h3>
+                            <p>Avg. Capacity</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Room Modal -->
+    <div id="roomModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="fas fa-door-open"></i> Add Room</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="roomForm">
+                    <input type="hidden" id="roomId" name="roomId">
+                    <div class="form-section">
+                        <h3><i class="fas fa-door-open"></i> Room Information</h3>
+                        <div class="form-group">
+                            <label for="roomNumber"><i class="fas fa-hashtag"></i> Room Number:</label>
+                            <input type="text" id="roomNumber" name="roomNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="building"><i class="fas fa-building"></i> Building:</label>
+                            <input type="text" id="building" name="building" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="capacity"><i class="fas fa-users"></i> Capacity:</label>
+                            <input type="number" id="capacity" name="capacity" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Room
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-import"></i> Import Rooms from CSV</h2>
+                <span class="close" id="closeImportModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-section">
+                    <h3><i class="fas fa-file-csv"></i> Upload CSV File</h3>
+                    <form id="importForm">
+                        <div class="form-group">
+                            <label for="csvFile"><i class="fas fa-file-csv"></i> Select CSV File:</label>
+                            <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+                            <small class="form-text">Please select a CSV file to import room data</small>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="overwriteData" name="overwriteData"> <i class="fas fa-exclamation-triangle"></i> Overwrite existing data
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancelImportBtn">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="importSubmitBtn">
+                                <i class="fas fa-upload"></i> Import Data
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../utils.js"></script>
+    <script src="../../user.js"></script>
+    <script src="room.js"></script>
+</body>
+</html>

@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Timetable - Student Portal</title>
+    <link rel="stylesheet" href="../../admin.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="../../utils.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-50: #eef2ff;
+            --primary-100: #e0e7ff;
+            --primary-200: #c7d2fe;
+            --primary-500: #4361ee;
+            --primary-600: #3751d0;
+            --primary-800: #1e3a8a;
+            --secondary: #3f37c9;
+            --success: #4ade80;
+            --success-100: #dcfce7;
+            --success-800: #166534;
+            --warning: #facc15;
+            --warning-100: #fef9c3;
+            --warning-800: #854d0e;
+            --error: #f87171;
+            --error-100: #fee2e2;
+            --error-800: #991b1b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-500: #64748b;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --gray-800: #1e293b;
+            --gray-900: #0f172a;
+            --white: #ffffff;
+            --font-body: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.2s ease-in-out;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--gray-800);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(67, 97, 238, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(63, 55, 201, 0.05) 0%, transparent 20%);
+        }
+
+        .user-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background: linear-gradient(180deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15);
+            z-index: 100;
+            transition: all 0.3s ease;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header {
+            padding: 0 20px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 14px 24px;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            gap: 14px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar-menu a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-menu a:hover::before {
+            transform: translateX(0);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left: 3px solid var(--warning);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a.active::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--warning);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--warning);
+        }
+
+        .sidebar-menu a i {
+            width: 22px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 25px;
+            margin-left: 260px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--gray-200);
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--secondary));
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info span {
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+
+        .content-wrapper {
+            padding: 20px 0;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-6);
+            text-align: center;
+            animation: slideIn 0.6s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header h2 {
+            font-size: 2rem;
+            margin-bottom: var(--space-2);
+            color: var(--primary-800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+        }
+
+        .page-header p {
+            color: var(--gray-600);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .controls-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            background: linear-gradient(135deg, var(--white), var(--gray-50));
+            padding: var(--space-5);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-group {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            color: var(--gray-500);
+            z-index: 2;
+            font-size: 1.1rem;
+        }
+
+        .search-box input {
+            padding: var(--space-3) var(--space-3) var(--space-3) 2.5rem;
+            border: 2px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2), var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .search-box input::placeholder {
+            color: var(--gray-400);
+            font-style: italic;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--gray-200);
+            animation: fadeIn 0.7s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--space-3);
+            background: var(--white);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: var(--space-4);
+            text-align: left;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .data-table th {
+            background: linear-gradient(120deg, var(--primary-500), var(--primary-600));
+            color: white;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-200);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover {
+            background: linear-gradient(to right, var(--primary-50), var(--white));
+            transform: translateY(-1px);
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .data-table tr {
+            transition: var(--transition);
+        }
+
+        .exam-status {
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-lg);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-scheduled {
+            background: linear-gradient(135deg, var(--primary-100), var(--primary-200));
+            color: var(--primary-800);
+            border: 1px solid var(--primary-200);
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, var(--success-100), var(--success));
+            color: var(--success-800);
+            border: 1px solid var(--success);
+        }
+
+        .status-postponed {
+            background: linear-gradient(135deg, var(--warning-100), var(--warning));
+            color: var(--warning-800);
+            border: 1px solid var(--warning);
+        }
+
+        .status-cancelled {
+            background: linear-gradient(135deg, var(--error-100), var(--error));
+            color: var(--error-800);
+            border: 1px solid var(--error);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+            
+            .sidebar-header h2 span {
+                display: none;
+            }
+            
+            .sidebar-menu a span {
+                display: none;
+            }
+            
+            .sidebar-menu a {
+                justify-content: center;
+                padding: 16px;
+            }
+            
+            .main-content {
+                margin-left: 80px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .user-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: relative;
+                height: auto;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                padding: 10px 0;
+            }
+
+            .sidebar-menu li {
+                margin: 5px;
+            }
+
+            .sidebar-menu a {
+                padding: 10px 15px;
+                border-radius: var(--radius-lg);
+                border-left: none;
+                border-bottom: 3px solid transparent;
+            }
+
+            .sidebar-menu a:hover, .sidebar-menu a.active {
+                border-left: none;
+                border-bottom: 3px solid var(--warning);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .content-wrapper {
+                padding: var(--space-4);
+            }
+
+            .controls-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .page-header h2 {
+                font-size: 1.5rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: var(--space-3);
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .page-header h2 {
+                font-size: 1.3rem;
+            }
+            
+            .data-table th,
+            .data-table td {
+                padding: var(--space-2);
+                font-size: 0.85rem;
+            }
+            
+            .exam-status {
+                font-size: 0.7rem;
+                padding: var(--space-1) var(--space-2);
+            }
+        }
+
+        /* Animation for loading state */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .loading-row td {
+            animation: pulse 1.5s infinite;
+            background-color: var(--gray-200);
+        }
+
+        /* Connection status indicator */
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-2) var(--space-3);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-left: var(--space-2);
+        }
+
+        .connection-status.connected {
+            background-color: var(--success-100);
+            color: var(--success-800);
+            border: 1px solid var(--success-100);
+            animation: pulse 2s infinite;
+        }
+
+        .connection-status.disconnected {
+            background-color: var(--error-100);
+            color: var(--error-800);
+            border: 1px solid var(--error-100);
+            animation: pulseError 1.5s infinite;
+        }
+
+        @keyframes pulseError {
+            0% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.4); }
+            70% { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0); }
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gray-200), var(--gray-300));
+            color: var(--gray-700);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--gray-300), var(--gray-400));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Toast notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: var(--radius-md);
+            color: white;
+            font-weight: 500;
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: linear-gradient(135deg, var(--success-500), var(--success-600));
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, var(--error-500), var(--error-600));
+        }
+    </style>
+</head>
+<body>
+    <div class="user-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-graduation-cap"></i> <span>Student Portal</span></h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="../dashboard/dashboard.html"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+                <li><a href="exams.html" class="active"><i class="fas fa-calendar-alt"></i> <span>Exam Timetable</span></a></li>
+                <li><a href="../seating/seating.html"><i class="fas fa-chair"></i> <span>Seating Arrangement</span></a></li>
+                <li><a href="../notifications/notifications.html"><i class="fas fa-bell"></i> <span>Notifications</span></a></li>
+                <li><a href="../profile/profile.html"><i class="fas fa-user-circle"></i> <span>Profile</span></a></li>
+                <li><a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-calendar-alt"></i> Exam Timetable</h1>
+                <div class="user-info">
+                    <span id="currentDateTime"></span>
+                    <span><i class="fas fa-user-graduate"></i> Student</span>
+                    <div class="connection-status connected" id="connectionStatus">
+                        <i class="fas fa-circle"></i>
+                        <span>Connected</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <div class="page-header">
+                    <h2><i class="fas fa-calendar-alt"></i> Exam Timetable</h2>
+                    <p>View your upcoming exams and important dates</p>
+                </div>
+
+                <div class="controls-section">
+                    <div class="search-group">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="searchExams" placeholder="Search exams by subject or code..." />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-barcode"></i> Exam Code</th>
+                                <th><i class="fas fa-book"></i> Subject</th>
+                                <th><i class="fas fa-calendar"></i> Date</th>
+                                <th><i class="fas fa-clock"></i> Time</th>
+                                <th><i class="fas fa-info-circle"></i> Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="examsTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 3rem;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                        <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; color: var(--primary-600);"></i>
+                                        <p style="font-size: 1.1rem; color: var(--gray-600); margin: 0;">Loading exam timetable...</p>
+                                        <p style="font-size: 0.9rem; color: var(--gray-500); margin: 0;">Please wait while we fetch your exam information</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="toastContainer"></div>
+
+    <script>
+        console.log('Exam timetable script loaded');
+        
+        // Update current date/time
+        function updateCurrentDateTime() {
+            try {
+                const now = new Date();
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'Asia/Kolkata'
+                };
+                const dateTimeElement = document.getElementById('currentDateTime');
+                if (dateTimeElement) {
+                    dateTimeElement.textContent = now.toLocaleString("en-US", options);
+                }
+            } catch (error) {
+                console.error('Error updating date/time:', error);
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const statusElement = document.getElementById('connectionStatus');
+            if (statusElement) {
+                if (connected) {
+                    statusElement.className = 'connection-status connected';
+                    statusElement.innerHTML = '<i class="fas fa-circle"></i> <span>Connected</span>';
+                } else {
+                    statusElement.className = 'connection-status disconnected';
+                    statusElement.innerHTML = '<i class="fas fa-circle"></i> <span>Disconnected</span>';
+                }
+            }
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            
+            toastContainer.appendChild(toast);
+            
+            // Trigger reflow to enable transition
+            toast.offsetHeight;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+
+        // Logout function
+        function logout() {
+            // Clear user data from localStorage
+            localStorage.removeItem('currentUser');
+            // Redirect to login page
+            window.location.href = '../../index.html';
+        }
+
+        // Fetch exams data from API
+        async function fetchExamsData() {
+            try {
+                console.log('Fetching exams data...');
+                // Use the utils.js fetchData function which handles cross-origin issues
+                const exams = await fetchData('user/exams');
+                console.log('Exams data received:', exams);
+                renderExamsTable(exams);
+                updateConnectionStatus(true);
+            } catch (error) {
+                console.error('Error fetching exams data:', error);
+                showError('Error loading exam data. Please check your connection.');
+                updateConnectionStatus(false);
+            }
+        }
+
+        // Filter exams based on search input
+        function filterExams() {
+            const searchTerm = document.getElementById('searchExams').value.toLowerCase();
+            const rows = document.querySelectorAll('#examsTableBody tr:not(.no-results)');
+            
+            let hasResults = false;
+            
+            rows.forEach(row => {
+                const subjectCell = row.cells[1];
+                const codeCell = row.cells[0];
+                
+                if (subjectCell && codeCell) {
+                    const subjectText = subjectCell.textContent.toLowerCase();
+                    const codeText = codeCell.textContent.toLowerCase();
+                    
+                    if (searchTerm === '' || subjectText.includes(searchTerm) || codeText.includes(searchTerm)) {
+                        row.style.display = '';
+                        hasResults = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                }
+            });
+            
+            // Show "no results" message if needed
+            const noResultsRow = document.querySelector('.no-results');
+            if (noResultsRow) {
+                noResultsRow.remove();
+            }
+            
+            if (searchTerm !== '' && !hasResults) {
+                const tableBody = document.getElementById('examsTableBody');
+                const noResultsRow = document.createElement('tr');
+                noResultsRow.className = 'no-results';
+                noResultsRow.innerHTML = `
+                    <td colspan="5" style="text-align: center; padding: 3rem;">
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                            <i class="fas fa-search" style="font-size: 2.5rem; color: var(--gray-400);"></i>
+                            <p style="font-size: 1.1rem; color: var(--gray-600); margin: 0;">No exams found matching "${searchTerm}"</p>
+                            <p style="font-size: 0.9rem; color: var(--gray-500); margin: 0;">Try adjusting your search term</p>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(noResultsRow);
+            }
+        }
+
+        // Render exams table
+        function renderExamsTable(exams) {
+            try {
+                console.log('Rendering exams table with data:', exams);
+                const tableBody = document.getElementById('examsTableBody');
+                if (!tableBody) {
+                    console.error('Table body element not found');
+                    return;
+                }
+                
+                // Show loading state while processing
+                tableBody.innerHTML = `
+                    <tr class="loading-row">
+                        <td colspan="5" style="text-align: center; padding: 3rem;">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 2.5rem; color: var(--primary-600);"></i>
+                                <p style="font-size: 1.1rem; color: var(--gray-600); margin: 0;">Processing exam data...</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                
+                // Small delay to show loading state
+                setTimeout(() => {
+                    tableBody.innerHTML = '';
+                    
+                    if (!exams || exams.length === 0) {
+                        tableBody.innerHTML = `
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 3rem;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                        <i class="fas fa-calendar-times" style="font-size: 2.5rem; color: var(--gray-400);"></i>
+                                        <p style="font-size: 1.2rem; color: var(--gray-600); margin: 0; font-weight: 500;">No Exams Scheduled</p>
+                                        <p style="font-size: 1rem; color: var(--gray-500); margin: 0;">Check back later for updates</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+                    
+                    // Sort by date
+                    exams.sort((a, b) => {
+                        const dateA = new Date(a.date);
+                        const dateB = new Date(b.date);
+                        return dateA - dateB;
+                    });
+                    
+                    exams.forEach((exam, index) => {
+                        console.log(`Processing exam ${index}:`, exam);
+                        // Format the date properly
+                        let examDate = 'Invalid Date';
+                        try {
+                            const dateObj = new Date(exam.date);
+                            if (!isNaN(dateObj.getTime())) {
+                                examDate = dateObj.toLocaleDateString("en-US", {
+                                    weekday: 'short',
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric'
+                                });
+                            }
+                        } catch (e) {
+                            console.error('Error formatting date for exam:', exam, e);
+                        }
+                        
+                        // Determine status class
+                        let statusClass = 'scheduled';
+                        if (exam.status) {
+                            // Convert status to lowercase and replace spaces with hyphens
+                            statusClass = exam.status.toLowerCase().replace(/\s+/g, '-');
+                        }
+                        
+                        console.log(`Creating row for exam ${index} with status class:`, statusClass);
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="font-weight: 600;">${exam.code || 'N/A'}</td>
+                            <td>${exam.subject || 'N/A'}</td>
+                            <td>${examDate}</td>
+                            <td>${exam.time || 'N/A'}</td>
+                            <td><span class="exam-status status-${statusClass}">${exam.status || 'N/A'}</span></td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                    
+                    // Apply search filter if there's a search term
+                    filterExams();
+                    console.log('Finished rendering exams table');
+                }, 300);
+            } catch (error) {
+                console.error('Error rendering exams table:', error);
+                showError('Error displaying exam data. Please try again.');
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            try {
+                console.log('Showing error message:', message);
+                const tableBody = document.getElementById('examsTableBody');
+                if (tableBody) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 3rem; color: var(--error-800); background-color: var(--error-100);">
+                                <div style="display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                                    <i class="fas fa-exclamation-triangle" style="font-size: 2.5rem;"></i>
+                                    <p style="font-size: 1.2rem; margin: 0; font-weight: 600;">Error Loading Exams</p>
+                                    <p style="font-size: 1rem; margin: 0;">${message}</p>
+                                    <button onclick="fetchExamsData()" class="btn btn-secondary" style="margin-top: 1rem;">
+                                        <i class="fas fa-sync-alt"></i> Retry
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error showing error message:', error);
+            }
+        }
+
+        // Initialize
+        function initialize() {
+            try {
+                console.log('Initializing exam timetable...');
+                updateCurrentDateTime();
+                setInterval(updateCurrentDateTime, 60000); // Update every minute
+                
+                // Add search event listener
+                const searchInput = document.getElementById('searchExams');
+                if (searchInput) {
+                    searchInput.addEventListener('input', filterExams);
+                }
+                
+                // Fetch initial exams data
+                console.log('Fetching initial exams data...');
+                fetchExamsData();
+                
+                // Add real-time updates - refresh every 30 seconds
+                setInterval(fetchExamsData, 30000);
+            } catch (error) {
+                console.error('Error during initialization:', error);
+            }
+        }
+        
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            console.log('DOM is still loading, waiting for DOMContentLoaded event');
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            console.log('DOM already loaded, initializing immediately');
+            initialize();
+        }
+    </script>
+</body>
+</html>
+```

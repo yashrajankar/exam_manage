@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Admin Panel</title>
+    <link rel="stylesheet" href="../../admin.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="toastContainer" aria-live="polite"></div>
+    
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="../timetable/timetable.html"><i class="fas fa-calendar-alt"></i> Timetable</a></li>
+                <li><a href="../students/students.html"><i class="fas fa-users"></i> Students</a></li>
+                <li><a href="../room/room.html"><i class="fas fa-door-open"></i> Rooms</a></li>
+                <li><a href="../staff/staff.html"><i class="fas fa-user-tie"></i> Staff</a></li>
+                <li><a href="../notifications/notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="../../templates/index.html"><i class="fas fa-file-csv"></i> CSV Templates</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                <div class="user-info">
+                    <span id="currentDateTime"></span>
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                    <button id="logoutBtn" class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h2>Examination Management System</h2>
+                    <p>Comprehensive dashboard for managing your institution's examination system</p>
+                </div>
+
+                <!-- Summary Stats -->
+                <div class="section-header">
+                    <h2><i class="fas fa-chart-bar"></i> System Overview</h2>
+                </div>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon students-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalStudents">0</h3>
+                            <p>Total Students</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon timetable-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalTimetables">0</h3>
+                            <p>Exam Schedules</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon room-icon">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalRooms">0</h3>
+                            <p>Exam Rooms</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Summary Sections -->
+                <div class="dashboard-grid">
+                    <!-- Student Distribution -->
+                    <div class="dashboard-widget full-width">
+                        <h3><i class="fas fa-users"></i> Student Distribution</h3>
+                        <div class="data-summary" id="studentDistribution">
+                            <div class="summary-placeholder">
+                                <i class="fas fa-spinner fa-spin"></i> Loading student data...
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Notifications -->
+                    <div class="dashboard-widget full-width">
+                        <h3><i class="fas fa-bell"></i> Recent Notifications</h3>
+                        <div class="data-summary" id="recentNotifications">
+                            <div class="summary-placeholder">
+                                <i class="fas fa-spinner fa-spin"></i> Loading notifications...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="section-header">
+                    <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                </div>
+                
+                <div class="quick-actions-grid">
+                    <div class="dashboard-widget" onclick="window.location.href='../students/students.html'">
+                        <h3><i class="fas fa-users"></i> Student Management</h3>
+                        <p>Manage student records, import from CSV, and organize by sections.</p>
+                        <button class="btn btn-primary widget-btn" onclick="window.location.href='../students/students.html'; event.stopPropagation();">Manage Students</button>
+                    </div>
+                    
+                    <div class="dashboard-widget" onclick="window.location.href='../timetable/timetable.html'">
+                        <h3><i class="fas fa-calendar-alt"></i> Timetable Management</h3>
+                        <p>Create and manage examination schedules and timetables.</p>
+                        <button class="btn btn-primary widget-btn" onclick="window.location.href='../timetable/timetable.html'; event.stopPropagation();">Manage Timetable</button>
+                    </div>
+                    
+                    <div class="dashboard-widget" onclick="window.location.href='../room/room.html'">
+                        <h3><i class="fas fa-door-open"></i> Room Management</h3>
+                        <p>Manage examination rooms and their capacities.</p>
+                        <button class="btn btn-primary widget-btn" onclick="window.location.href='../room/room.html'; event.stopPropagation();">Manage Rooms</button>
+                    </div>
+                    
+                    <div class="dashboard-widget" onclick="window.location.href='../staff/staff.html'">
+                        <h3><i class="fas fa-user-tie"></i> Staff Management</h3>
+                        <p>Manage staff records and their roles.</p>
+                        <button class="btn btn-primary widget-btn" onclick="window.location.href='../staff/staff.html'; event.stopPropagation();">Manage Staff</button>
+                    </div>
+                </div>
+                
+                <!-- System Information -->
+                <div class="section-header">
+                    <h2><i class="fas fa-info-circle"></i> System Information</h2>
+                </div>
+                
+                <div class="info-cards">
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h3>Database Status</h3>
+                            <p id="databaseStatus">Checking...</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h3>System Status</h3>
+                            <p id="systemStatus">Operational</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <div class="info-card-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="info-card-content">
+                            <h3>Last Updated</h3>
+                            <p id="lastUpdated">Just now</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../utils.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

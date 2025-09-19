@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Management - AICN Admin</title>
+    <link rel="stylesheet" href="../../admin.css">
+    <link rel="stylesheet" href="staff.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="toastContainer" aria-live="polite"></div>
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2>Admin Panel</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="../dashboard/dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="../timetable/timetable.html"><i class="fas fa-calendar-alt"></i> Timetable</a></li>
+                <li><a href="../students/students.html"><i class="fas fa-users"></i> Students</a></li>
+                <li><a href="../room/room.html"><i class="fas fa-door-open"></i> Rooms</a></li>
+                <li><a href="staff.html" class="active"><i class="fas fa-user-tie"></i> Staff</a></li>
+                <li><a href="../notifications/notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="../../templates/index.html"><i class="fas fa-file-csv"></i> CSV Templates</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-user-tie"></i> Staff Management</h1>
+                <div class="user-info">
+                    <span id="currentDateTime"></span>
+                    <span>Admin</span>
+                    <i class="fas fa-user-circle"></i>
+                    <button id="logoutBtn" class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="content-wrapper">
+                <!-- Stats Section -->
+                <div class="stats-section">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalStaff">0</h3>
+                            <p>Total Staff</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="availableStaff">0</h3>
+                            <p>Available Staff</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="unavailableStaff">0</h3>
+                            <p>Unavailable Staff</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls Section -->
+                <div class="controls-section">
+                    <div class="control-group">
+                        <button id="addStaffBtn" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Add Staff
+                        </button>
+                        <button id="importStaffBtn" class="btn btn-secondary">
+                            <i class="fas fa-file-import"></i> Import CSV
+                        </button>
+                        <button id="exportStaffBtn" class="btn btn-secondary">
+                            <i class="fas fa-file-export"></i> Export CSV
+                        </button>
+                        <button id="clearAllStaffBtn" class="btn btn-danger">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+                    <div class="search-group">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="staffSearch" placeholder="Search staff...">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Staff Table -->
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-user"></i> Name</th>
+                                <th><i class="fas fa-building"></i> Department</th>
+                                <th><i class="fas fa-envelope"></i> Email</th>
+                                <th><i class="fas fa-phone"></i> Phone</th>
+                                <th><i class="fas fa-calendar-check"></i> Availability</th>
+                                <th><i class="fas fa-cog"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="staffTableBody">
+                            <!-- Staff rows will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Invigilator Assignment Section -->
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="fas fa-user-check"></i> Invigilator Assignment</h2>
+                    </div>
+                    
+                    <div class="assignment-controls">
+                        <div class="control-group">
+                            <button id="assignInvigilatorsBtn" class="btn btn-primary">
+                                <i class="fas fa-random"></i> Generate Random Assignments
+                            </button>
+                            <button id="exportAssignmentsBtn" class="btn btn-secondary">
+                                <i class="fas fa-file-export"></i> Export Assignments
+                            </button>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="assignment-results" id="assignmentResults" style="display: none;">
+                        <div id="assignmentsContainer" class="assignments-container"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Staff Modal -->
+    <div id="staffModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle"><i class="fas fa-user-tie"></i> Add Staff</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="staffForm">
+                    <input type="hidden" id="staffId" name="staffId">
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-user"></i> Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone"><i class="fas fa-phone"></i> Phone:</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department"><i class="fas fa-building"></i> Department:</label>
+                        <input type="text" id="department" name="department" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="availability"><i class="fas fa-calendar-check"></i> Availability:</label>
+                        <select id="availability" name="availability" required>
+                            <option value="Yes">Available</option>
+                            <option value="No">Unavailable</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Save Staff
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-file-import"></i> Import Staff from CSV</h2>
+                <span class="close" id="closeImportModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="importForm">
+                    <div class="form-group">
+                        <label for="csvFile"><i class="fas fa-file-csv"></i> Select CSV File:</label>
+                        <input type="file" id="csvFile" name="csvFile" accept=".csv" required>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="overwriteData" name="overwriteData">
+                            Overwrite existing data
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancelImportBtn">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-import"></i> Import Staff
+                        </button>
+                    </div>
+                </form>
+                <div class="import-info">
+                    <h3><i class="fas fa-info-circle"></i> CSV Format</h3>
+                    <p>CSV file should have the following columns:</p>
+                    <ul>
+                        <li>Name (required)</li>
+                        <li>Department (required)</li>
+                        <li>Email (required)</li>
+                        <li>Phone (required)</li>
+                        <li>Availability (Yes/No, default: Yes)</li>
+                    </ul>
+                    <p><a href="#" id="downloadSampleBtn"><i class="fas fa-download"></i> Download Sample CSV</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../utils.js"></script>
+    <script src="../../user.js"></script>
+    <script src="staff.js"></script>
+</body>
+</html>
